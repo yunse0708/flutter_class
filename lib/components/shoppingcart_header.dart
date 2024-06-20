@@ -1,38 +1,87 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_shoppingcart/constants.dart';
+import 'package:flutter_shoppingcart/components/weather_data.dart';
 
-class WeatherHeader extends StatefulWidget {
-  const WeatherHeader({Key? key}) : super(key: key);
+class ShoppingCartHeader extends StatefulWidget {
+  const ShoppingCartHeader({Key? key}) : super(key: key);
 
   @override
-  State<WeatherHeader> createState() => _ShoppingCartHeaderState();
+  State<ShoppingCartHeader> createState() => _ShoppingCartHeaderState();
 }
 
-class _ShoppingCartHeaderState extends State<WeatherHeader> {
+class _ShoppingCartHeaderState extends State<ShoppingCartHeader> {
   int selectedId = 0;
-
-  List<String> selectedPic = [
-  ];
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _buildHeaderPic(),
+        _buildWeatherDetails(),
+        SizedBox(
+            height:
+                50), // Increased spacing between weather details and header selector
         _buildHeaderSelector(),
       ],
     );
   }
 
-  Widget _buildHeaderPic() {
+  Widget _buildWeatherDetails() {
+    final selectedWeather = weatherDataList[selectedId]; 
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: AspectRatio(
-        aspectRatio: 5 / 3,
-        child: Image.asset(
-          selectedPic[selectedId],
-          fit: BoxFit.cover,
+      child: Container(
+        padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 10,
+              offset: Offset(0, 5),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            Text(
+              '오늘의 날씨',
+              style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold), // Larger font size
+            ),
+            SizedBox(height: 20), // Increased spacing
+            selectedWeather.imagePath.isNotEmpty
+                ? Image.asset(
+                    selectedWeather.imagePath,
+                    width: 300, // Increased image size
+                    height: 200, // Increased image size
+                  )
+                : Text(
+                    selectedWeather.day,
+                    style: TextStyle(fontSize: 24),
+                  ),
+            SizedBox(height: 20), // Increased spacing
+            Text(
+              '온도: ${selectedWeather.temperature}',
+              style: TextStyle(fontSize: 24), // Larger font size
+            ),
+            SizedBox(height: 10),
+            Text(
+              '습도: ${selectedWeather.humidity}',
+              style: TextStyle(fontSize: 24), // Larger font size
+            ),
+            SizedBox(height: 10),
+            Text(
+              '비 올 확률: ${selectedWeather.rainProbability}',
+              style: TextStyle(fontSize: 24), // Larger font size
+            ),
+            SizedBox(height: 10),
+            Text(
+              '바람 속도: ${selectedWeather.windSpeed}',
+              style: TextStyle(fontSize: 24), // Larger font size
+            ),
+          ],
         ),
       ),
     );
@@ -40,30 +89,30 @@ class _ShoppingCartHeaderState extends State<WeatherHeader> {
 
   Widget _buildHeaderSelector() {
     return Padding(
-      padding: const EdgeInsets.only(left: 30, right: 30, top: 10, bottom: 30),
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _buildHeaderSelectorButton(0, Icons.directions_bike),
-          _buildHeaderSelectorButton(1, Icons.motorcycle),
-          _buildHeaderSelectorButton(2, CupertinoIcons.car_detailed),
-          _buildHeaderSelectorButton(3, CupertinoIcons.airplane),
-        ],
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: weatherDataList.map((data) {
+          int id = weatherDataList.indexOf(data);
+          return _buildHeaderSelectorButton(id, data.day);
+        }).toList(),
       ),
     );
   }
 
-  // 1. 다른 화면에서도 재사용하면 공통 컴포넌트 위젯으로 관리하는 것이 좋다.
-  Widget _buildHeaderSelectorButton(int id, IconData mIcon) {
+  Widget _buildHeaderSelectorButton(int id, String day) {
     return Container(
-      width: 70,
-      height: 70,
+      width: 50,
+      height: 50,
       decoration: BoxDecoration(
         color: id == selectedId ? kAccentColor : kSecondaryColor,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(15),
       ),
-      child: IconButton(
-        icon: Icon(mIcon, color: Colors.black),
+      child: TextButton(
+        child: Text(
+          day,
+          style: TextStyle(color: Colors.black, fontSize: 18),
+        ),
         onPressed: () {
           setState(() {
             selectedId = id;

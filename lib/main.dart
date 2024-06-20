@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_shoppingcart/components/shoppingcart_detail.dart';
 import 'package:flutter_shoppingcart/components/shoppingcart_header.dart';
 import 'package:flutter_shoppingcart/theme.dart';
 
@@ -28,8 +27,7 @@ class ShoppingCartPage extends StatelessWidget {
       appBar: _buildShoppingCartAppBar(),
       body: Column(
         children: [
-          WeatherHeader(),
-          Expanded(child: ShoppingCartDetail()),
+          ShoppingCartHeader(),
         ],
       ),
     );
@@ -43,7 +41,7 @@ class ShoppingCartPage extends StatelessWidget {
       ),
       actions: [
         IconButton(
-          icon: Icon(Icons.shopping_cart),
+          icon: Image.asset('assets/cloud.png'),
           onPressed: () {},
         ),
         SizedBox(width: 16),
